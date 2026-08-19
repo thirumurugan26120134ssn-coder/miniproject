@@ -1,0 +1,27 @@
+========================================
+       LINUX HEALTH SUMMARY REPORT
+========================================
+
+Generated at: Wednesday 19 August 2026 10:10:50 AM IST
+
+---------- SYSTEM STATUS ----------
+
+Disk Usage: 41%
+Status: OK - Disk usage is within acceptable limits.
+
+Memory Usage: 20%
+Status: OK - Memory usage is within acceptable limits.
+
+CPU Load (1 minute): 0.50
+Status: CPU load recorded successfully.
+
+---------- REPORT VALIDATION ----------
+Health report generation: SUCCESS
+
+---------- ACTIONABLE SUMMARY ----------
+Overall Status: HEALTHY
+Recommended Action: No immediate action required.
+
+========================================
+Summary generation completed.
+========================================
