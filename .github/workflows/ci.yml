@@ -1,0 +1,118 @@
+name: Linux Health Monitoring CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  health-check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ----------------------------------------
+      # 1. Checkout repository
+      # ----------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ----------------------------------------
+      # 2. Display project files
+      # ----------------------------------------
+
+      - name: Display project files
+        run: |
+          echo "Project structure:"
+          find . -maxdepth 3 -type f | sort
+
+      # ----------------------------------------
+      # 3. Give scripts execute permission
+      # ----------------------------------------
+
+      - name: Set script permissions
+        run: |
+          chmod +x scripts/health_monitor.sh
+          chmod +x scripts/summarize_report.sh
+          chmod +x scripts/automate_health_monitor.sh
+
+      # ----------------------------------------
+      # 4. Run health monitor
+      # ----------------------------------------
+
+      - name: Run health monitor
+        run: |
+          ./scripts/health_monitor.sh
+
+      # ----------------------------------------
+      # 5. Validate health report
+      # ----------------------------------------
+
+      - name: Validate health report
+        run: |
+          test -f reports/health_report.txt
+          test -s reports/health_report.txt
+
+          grep -q "LINUX SYSTEM HEALTH REPORT" reports/health_report.txt
+          grep -q "HOST INFORMATION" reports/health_report.txt
+          grep -q "DISK USAGE" reports/health_report.txt
+          grep -q "MEMORY USAGE" reports/health_report.txt
+          grep -q "CPU LOAD" reports/health_report.txt
+          grep -q "Health report generated successfully" reports/health_report.txt
+
+          echo "Health report validation PASSED"
+
+      # ----------------------------------------
+      # 6. Display health report
+      # ----------------------------------------
+
+      - name: Display health report
+        run: |
+          cat reports/health_report.txt
+
+      # ----------------------------------------
+      # 7. Generate summary
+      # ----------------------------------------
+
+      - name: Generate health summary
+        run: |
+          ./scripts/summarize_report.sh
+
+      # ----------------------------------------
+      # 8. Validate summary
+      # ----------------------------------------
+
+      - name: Validate health summary
+        run: |
+          test -f reports/summary_report.txt
+          test -s reports/summary_report.txt
+
+          grep -q "LINUX HEALTH SUMMARY REPORT" reports/summary_report.txt
+          grep -q "Overall Status:" reports/summary_report.txt
+          grep -q "Recommended Action:" reports/summary_report.txt
+
+          echo "Health summary validation PASSED"
+
+      # ----------------------------------------
+      # 9. Display summary
+      # ----------------------------------------
+
+      - name: Display health summary
+        run: |
+          cat reports/summary_report.txt
+
+      # ----------------------------------------
+      # 10. CI success
+      # ----------------------------------------
+
+      - name: Health monitoring CI completed
+        run: |
+          echo "========================================"
+          echo "Linux Health Monitoring CI PASSED"
+          echo "========================================"
